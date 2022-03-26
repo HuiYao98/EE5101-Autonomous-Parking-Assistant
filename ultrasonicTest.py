@@ -1,22 +1,26 @@
 import RPi.GPIO as GPIO
 import threading
 import time
- 
-#GPIO Mode (BOARD / BCM)
-GPIO.setmode(GPIO.BCM)
- 
-#set GPIO Pins
-GPIO_TRIGGER1 = 23
-GPIO_ECHO1 = 24
-GPIO_TRIGGER2 = 25
-GPIO_ECHO2 = 16
- 
-#set GPIO direction (IN / OUT)
-GPIO.setup(GPIO_TRIGGER1, GPIO.OUT)
-GPIO.setup(GPIO_ECHO1, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-GPIO.setup(GPIO_TRIGGER2, GPIO.OUT)
-GPIO.setup(GPIO_ECHO2, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
+#Initialize the ultrasonic sensors
+def ultraSonic_Init():
+    #Dictionary to store GPIO pin values
+    ultraD = {}
+    #set GPIO Pins for Ultrasonic Sensors
+    ultraD["GPIO_TRIGGER1"] = 23
+    ultraD["GPIO_ECHO1"] = 24
+    ultraD["GPIO_TRIGGER2"] = 25
+    ultraD["GPIO_ECHO2"] = 16
+     
+    #set GPIO direction (echo as input / trigger as output)
+    GPIO.setup(ultraD["GPIO_TRIGGER1"], GPIO.OUT)
+    GPIO.setup(ultraD["GPIO_ECHO1"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+    GPIO.setup(ultraD["GPIO_TRIGGER2"], GPIO.OUT)
+    GPIO.setup(ultraD["GPIO_ECHO2"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+    
+    return ultraD
+
+#Ultrasonic Thread Defn
 class myUltraThread (threading.Thread):
     def __init__(self,sensorNo, triggerPin, echoPin):
         threading.Thread.__init__(self)
@@ -25,9 +29,16 @@ class myUltraThread (threading.Thread):
         self.echoPin = echoPin
     def run(self):
         print("Starting Thread " + str(self.sensorNo))
-        distance(self.sensorNo, self.triggerPin, self.echoPin)
-        print("Exit Thread " + str(self.sensorNo))
-        
+        d = distance(self.sensorNo, self.triggerPin, self.echoPin)
+        #If distance measured is under __cm, means servo should turn __
+        if d < 15:
+            print("Exit Thread cond 1" + str(self.sensorNo))
+            return 1
+        else:
+            print("Exit Thread cond 2 " + str(self.sensorNo))
+            return 0
+
+#Function to calculate and return the distance read by an ultrasonic sensor (cm)
 def distance(sensorNo, TriggerPin, EchoPin):
     # set Trigger to HIGH
     GPIO.output(TriggerPin, True)
@@ -54,22 +65,4 @@ def distance(sensorNo, TriggerPin, EchoPin):
  
     print("Measured distance from sensor " + str(sensorNo) + " = " + str(distance) +"cm \n")
     time.sleep(0.5)
-if __name__ == '__main__':
-    try:
-        while True:
-            threads = []
-            #Create New Threads:
-            thread1 = myUltraThread(1,GPIO_TRIGGER1, GPIO_ECHO1)
-            thread2 = myUltraThread(2,GPIO_TRIGGER2, GPIO_ECHO2)
-            threads.append(thread1)
-            threads.append(thread2)
-            for t in threads:
-                t.start()
-            for t in threads:
-                t.join()
-            print("Next Cycle")
- 
-        # Reset by pressing CTRL + C
-    except KeyboardInterrupt:
-        print("Measurement stopped by User")
-        GPIO.cleanup()
+    return distance
