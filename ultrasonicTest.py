@@ -64,5 +64,5 @@ def distance(sensorNo, TriggerPin, EchoPin):
     distance = (TimeElapsed * 34300) / 2
  
     print("Measured distance from sensor " + str(sensorNo) + " = " + str(distance) +"cm \n")
-    #time.sleep(0.5)
+    time.sleep(0.5)
     return distance

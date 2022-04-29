@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import threading
 import pigpio
+import time
 
 #Initialize the Servo motor
 def servo_Init(pwm):
@@ -34,6 +35,7 @@ class myServoThread (threading.Thread):
 def servo(dutyCycle, p, pwm): #duty cycle can be changed during testing if turn too much/too little
     #p.ChangeDutyCycle(dutyCycle)
     pwm.set_servo_pulsewidth(p, dutyCycle)
-    print(dutyCycle)
+    print("Servo Dutycycle: " + str(dutyCycle))
+    time.sleep(0.5)
     
 

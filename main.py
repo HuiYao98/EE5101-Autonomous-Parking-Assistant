@@ -1,5 +1,6 @@
 from ultrasonicTest import myUltraThread, ultraSonic_Init
 from servoMotorTest import myServoThread, servo_Init
+from motorTest import myMotorThread, motor_Init
 import RPi.GPIO as GPIO
 import pigpio
 
@@ -10,6 +11,7 @@ GPIO.setmode(GPIO.BCM)
 ultraD = ultraSonic_Init()
 pwm = pigpio.pi()
 servo = servo_Init(pwm)
+motor = motor_Init(pwm)
 
 if __name__ == '__main__':
     try:
@@ -24,6 +26,9 @@ if __name__ == '__main__':
         #Create thread for Servo
         thread3 = myServoThread(servo,pwm)
         
+        #Create thread for motor
+        threadM = myMotorThread(motor[0], motor[1], motor[2] ,pwm)
+        
         #Adding ultrasonic threads to list of threads to execute
         threads.append(thread1)
         threads.append(thread2)
@@ -32,6 +37,7 @@ if __name__ == '__main__':
         for t in threads:
             t.start()
         thread3.start()
+        threadM.start()
         while True:
             for t in threads:
                 t.join()
@@ -44,12 +50,15 @@ if __name__ == '__main__':
                 #, front wheels turn right to reverse right
                 #Turn right:
                 thread3.runRight() #func to turn front wheel right
+                threadM.runBackward()
             elif ultraSensorValues[2] == 1: #If my right ultrasonic sensor is too near
                 #Turn left:
                 thread3.runLeft() #func to turn front wheel left
+                threadM.runBackward()
             else: #All clear, continue straight path
                 #Go straight:
                 thread3.runStraight()
+                threadM.runForward()
                 
 
     # Reset by pressing CTRL + C
