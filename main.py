@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 ultraD = ultraSonic_Init()
 pwm = pigpio.pi()
 servo = servo_Init(pwm)
-motor = motor_Init(pwm)
+motor = motor_Init()
 
 if __name__ == '__main__':
     try:
@@ -22,21 +22,30 @@ if __name__ == '__main__':
         #Create New Ultrasonic Threads:
         thread1 = myUltraThread(1,ultraD["GPIO_TRIGGER1"], ultraD["GPIO_ECHO1"])
         thread2 = myUltraThread(2,ultraD["GPIO_TRIGGER2"], ultraD["GPIO_ECHO2"])
+        thread3 = myUltraThread(3,ultraD["GPIO_TRIGGER3"], ultraD["GPIO_ECHO3"])
+        thread4 = myUltraThread(4,ultraD["GPIO_TRIGGER4"], ultraD["GPIO_ECHO4"])
+        thread5 = myUltraThread(5,ultraD["GPIO_TRIGGER5"], ultraD["GPIO_ECHO5"])
+        thread6 = myUltraThread(6,ultraD["GPIO_TRIGGER6"], ultraD["GPIO_ECHO6"])
         
         #Create thread for Servo
-        thread3 = myServoThread(servo,pwm)
+        thread7 = myServoThread(servo,pwm)
         
         #Create thread for motor
-        threadM = myMotorThread(motor[0], motor[1], motor[2] ,pwm)
+        threadM = myMotorThread(motor[0], motor[1], motor[2], motor[3])
         
         #Adding ultrasonic threads to list of threads to execute
         threads.append(thread1)
         threads.append(thread2)
+        #threads.append(thread3) #--> dk why this one & thread 6
+        #got issue, maybe its bec of the connection?
+        threads.append(thread4)
+        threads.append(thread5)
+        #threads.append(thread6)
         
         #Executing the threads
         for t in threads:
             t.start()
-        thread3.start()
+        thread7.start()
         threadM.start()
         while True:
             for t in threads:
@@ -46,18 +55,20 @@ if __name__ == '__main__':
             #Can use this dict to trigger servo thread movement 
             print(ultraSensorValues)
             
-            if ultraSensorValues[1] == 1: #If my left ultrasonic sensor is too near
+            if ultraSensorValues[1] == 1 or ultraSensorValues[2] == 1:
+                #If my left ultrasonic sensor is too near
                 #, front wheels turn right to reverse right
                 #Turn right:
-                thread3.runRight() #func to turn front wheel right
+                thread7.runRight() #func to turn front wheel right
                 threadM.runBackward()
-            elif ultraSensorValues[2] == 1: #If my right ultrasonic sensor is too near
+            elif ultraSensorValues[4] == 1 or ultraSensorValues[5] == 1 or ultraSensorValues[6] == 1:
+                #If my right ultrasonic sensor is too near
                 #Turn left:
-                thread3.runLeft() #func to turn front wheel left
+                thread7.runLeft() #func to turn front wheel left
                 threadM.runBackward()
             else: #All clear, continue straight path
                 #Go straight:
-                thread3.runStraight()
+                thread7.runStraight()
                 threadM.runForward()
                 
 
