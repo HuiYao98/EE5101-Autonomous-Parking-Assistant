@@ -14,8 +14,8 @@ def ultraSonic_Init():
     ultraD["GPIO_ECHO2"] = 8
     ultraD["GPIO_TRIGGER3"] = 16
     ultraD["GPIO_ECHO3"] = 20
-    ultraD["GPIO_TRIGGER4"] = 21
-    ultraD["GPIO_ECHO4"] = 26
+    #ultraD["GPIO_TRIGGER4"] = 21
+    #ultraD["GPIO_ECHO4"] = 26
     ultraD["GPIO_TRIGGER5"] = 27
     ultraD["GPIO_ECHO5"] = 22
     ultraD["GPIO_TRIGGER6"] = 9
@@ -28,8 +28,8 @@ def ultraSonic_Init():
     GPIO.setup(ultraD["GPIO_ECHO2"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(ultraD["GPIO_TRIGGER3"], GPIO.OUT)
     GPIO.setup(ultraD["GPIO_ECHO3"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-    GPIO.setup(ultraD["GPIO_TRIGGER4"], GPIO.OUT)
-    GPIO.setup(ultraD["GPIO_ECHO4"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+    #GPIO.setup(ultraD["GPIO_TRIGGER4"], GPIO.OUT)
+    #GPIO.setup(ultraD["GPIO_ECHO4"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(ultraD["GPIO_TRIGGER5"], GPIO.OUT)
     GPIO.setup(ultraD["GPIO_ECHO5"], GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(ultraD["GPIO_TRIGGER6"], GPIO.OUT)
@@ -44,7 +44,7 @@ class myUltraThread (threading.Thread):
         self.sensorNo = sensorNo
         self.triggerPin = triggerPin
         self.echoPin = echoPin
-        self.lock = threading.Lock()
+        #self.lock = threading.Lock()
     def run(self):
         print("Starting Thread " + str(self.sensorNo))
         print(self.echoPin, type(self.echoPin))
@@ -63,21 +63,25 @@ def distance(sensorNo, TriggerPin, EchoPin):
     GPIO.output(TriggerPin, True)
     
     # set Trigger after 0.01ms to LOW
-    time.sleep(0.00001)
+    time.sleep(0.001)
     GPIO.output(TriggerPin, False)
     
     StartTime = time.time()
+    StartTime1 = time.time()
     StopTime = time.time()
     # save StartTime
     while GPIO.input(EchoPin) == 0:
-        StartTime = time.time()
+        if time.time() - StartTime > 0.1:
+            print("Timeout Sensor " + str(sensorNo))
+            break
+        StartTime1 = time.time()
  
     # save time of arrival
     while GPIO.input(EchoPin) == 1:
         StopTime = time.time()
         
     # time difference between start and arrival
-    TimeElapsed = StopTime - StartTime
+    TimeElapsed = StopTime - StartTime1
     
     # multiply with the sonic speed (34300 cm/s)
     # and divide by 2, because there and back
@@ -85,6 +89,6 @@ def distance(sensorNo, TriggerPin, EchoPin):
  
     print("Measured distance from sensor " + str(sensorNo) + " = " + str(distance) +"cm \n")
     #Put this thread to slp and let the others run
-    time.sleep(0.1)
+    time.sleep(1)
     
     return distance

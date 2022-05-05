@@ -15,7 +15,7 @@ def motor_Init():
     
     #Set pwm pin to motor as output
     GPIO.setup(motorEnablePin, GPIO.OUT)
-    pwm=GPIO.PWM(motorEnablePin, 100)
+    pwm=GPIO.PWM(motorEnablePin, 700)
     pwm.start(0)
     return motorEnablePin, motorInputPin1, motorInputPin2, pwm
 
