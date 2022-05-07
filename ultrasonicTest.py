@@ -46,16 +46,17 @@ class myUltraThread (threading.Thread):
         self.echoPin = echoPin
         #self.lock = threading.Lock()
     def run(self):
-        print("Starting Thread " + str(self.sensorNo))
-        print(self.echoPin, type(self.echoPin))
+        #print("Starting Thread " + str(self.sensorNo))
+        #print(self.echoPin, type(self.echoPin))
         d = distance(self.sensorNo, self.triggerPin, self.echoPin)
+        return d
         #If distance measured is under __cm, means servo should turn __
-        if d < 15:
-            print("Exit Thread, Sensor " + str(self.sensorNo) + " Too near.")
-            return 1
-        else:
-            print("Exit Thread cond 2, Sensor " + str(self.sensorNo) + " Ok.")
-            return 0
+        #if d < 15:
+         #   print("Exit Thread, Sensor " + str(self.sensorNo) + " Too near.")
+          #  return 1
+        #else:
+         #   print("Exit Thread cond 2, Sensor " + str(self.sensorNo) + " Ok.")
+          #  return 0
 
 #Function to calculate and return the distance read by an ultrasonic sensor (cm)
 def distance(sensorNo, TriggerPin, EchoPin):
@@ -89,6 +90,6 @@ def distance(sensorNo, TriggerPin, EchoPin):
  
     print("Measured distance from sensor " + str(sensorNo) + " = " + str(distance) +"cm \n")
     #Put this thread to slp and let the others run
-    time.sleep(1)
+    #time.sleep(0.1)
     
     return distance

@@ -20,15 +20,15 @@ class myServoThread (threading.Thread):
     # according to what we need for straight/left/right
     def runStraight(self):
         print("Starting Servo Thread")
-        servo(1500, self.Servo, self.pwm)
+        servo(1550, self.Servo, self.pwm)
         print("Exit Servo Thread")
     def runLeft(self):
         print("Starting Servo Thread")
-        servo(1150, self.Servo, self.pwm)
+        servo(1100, self.Servo, self.pwm)
         print("Exit Servo Thread")
     def runRight(self):
         print("Starting Servo Thread")
-        servo(1850, self.Servo, self.pwm)
+        servo(1900, self.Servo, self.pwm)
         print("Exit Servo Thread")
 
 def servo(dutyCycle, p, pwm): #duty cycle can be changed during testing if turn too much/too little

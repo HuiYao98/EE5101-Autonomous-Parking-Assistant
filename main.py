@@ -1,6 +1,7 @@
 from ultrasonicTest import myUltraThread, ultraSonic_Init
 from servoMotorTest import myServoThread, servo_Init
 from motorTest import myMotorThread, motor_Init
+from robotMain import robot
 import RPi.GPIO as GPIO
 import pigpio
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     try:
         #To store the threads and ultrasonic sensor values
         threads = []
-        ultraSensorValues = {}
+        ultraSensorValues = {} #Dictionary for storing ultrasonic distance values
         
         #Create New Ultrasonic Threads:
         thread1 = myUltraThread(1,ultraD["GPIO_TRIGGER1"], ultraD["GPIO_ECHO1"])
@@ -41,41 +42,25 @@ if __name__ == '__main__':
         #threads.append(thread4)
         threads.append(thread5)
         threads.append(thread6)
-        
+        smartRobot = robot(threads, ultraSensorValues, threadM, thread7)
         #Executing the threads
-        for t in threads:
+        for t in smartRobot.ultraThreadList:
             t.start()
-        thread7.start()
-        threadM.start()
+        smartRobot.motorThread.start()
+        smartRobot.servoThread.start()
+        smartRobot.servoThread.runStraight()
         while True:
-            #for t in threads:
-             #   t.join()
-            for t in threads:
-                ultraSensorValues[t.sensorNo] = t.run()
+            for t in smartRobot.ultraThreadList:
+                t.join()
+            for t in smartRobot.ultraThreadList:
+                smartRobot.ultraData[t.sensorNo] = t.run()
             #Can use this dict to trigger servo thread movement 
-            print(ultraSensorValues)
-            #startTime = time.time()
-            #if ultraSensorValues[6] == 0: #I should continue moving forward
-        
-            #if 
-            
-            if ultraSensorValues[5] == 1 or ultraSensorValues[6] == 1:
-                #If my left ultrasonic sensor is too near
-                #, front wheels turn right to reverse right
-                #Turn right:
-                thread7.runRight() #func to turn front wheel right
-                threadM.runBackward()
-            elif ultraSensorValues[1] == 1 or ultraSensorValues[2] == 1:
-                #If my right ultrasonic sensor is too near
-                #Turn left:
-                thread7.runLeft() #func to turn front wheel left
-                threadM.runBackward()
-            elif ultraSensorValues[3] == 1: #All clear, continue straight path
-                #Go straight:
-                thread7.runStraight()
-                threadM.runForward()
-            else:
-                pass
+            print(smartRobot.ultraData)
+            if smartRobot.parking == 0: #Not parking
+                smartRobot.checkEmptySpace()
+                if smartRobot.leftFlag == 1:
+                    smartRobot.confirmEmptySpace()
+
                 
 
     # Reset by pressing CTRL + C

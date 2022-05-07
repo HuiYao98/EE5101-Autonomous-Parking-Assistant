@@ -28,7 +28,7 @@ class myMotorThread (threading.Thread):
         self.pwm = pwm
     def runForward(self):
         print("Starting Motor Forward Thread")
-        motor(1, 100, self.Motor, self.input1, self.input2, self.pwm)
+        motor(1, 70, self.Motor, self.input1, self.input2, self.pwm)
         print("Exit Motor Forward Thread")
     def runBackward(self):
         print("Starting Motor Backward Thread")
@@ -47,15 +47,15 @@ def motor(number,dutyCycle, p, i1, i2, pwm): #duty cycle can be changed during t
         GPIO.output(i2, False)
     elif number == 1:
         #Go forward:
-        GPIO.output(i1, True)
-        GPIO.output(i2, False)
-    elif number == 2:
-        #Go backward:
         GPIO.output(i1, False)
         GPIO.output(i2, True)
+    elif number == 2:
+        #Go backward:
+        GPIO.output(i1, True)
+        GPIO.output(i2, False)
     #Dutycycle set to 100% for now
     pwm.ChangeDutyCycle(dutyCycle)
     GPIO.output(p, True)
     print("Motor dutycycle: " + str(dutyCycle))
     #Put thread to sleep for other threads to run
-    time.sleep(1)
+    #time.sleep(1)
