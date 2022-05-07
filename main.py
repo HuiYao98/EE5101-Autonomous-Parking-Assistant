@@ -3,6 +3,7 @@ from servoMotorTest import myServoThread, servo_Init
 from motorTest import myMotorThread, motor_Init
 from robotMain import robot
 import RPi.GPIO as GPIO
+import time
 import pigpio
 
 #Set board to use GPIO board pin numbering
@@ -56,10 +57,17 @@ if __name__ == '__main__':
                 smartRobot.ultraData[t.sensorNo] = t.run()
             #Can use this dict to trigger servo thread movement 
             print(smartRobot.ultraData)
+            if smartRobot.parked == 1:
+                print("Car has parked")
+                break
+            
             if smartRobot.parking == 0: #Not parking
                 smartRobot.checkEmptySpace()
                 if smartRobot.leftFlag == 1:
                     smartRobot.confirmEmptySpace()
+            else: #Currently parking
+                time.sleep(0.5)
+                smartRobot.checkParkingObstacles()
 
                 
 

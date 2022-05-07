@@ -28,11 +28,11 @@ class myMotorThread (threading.Thread):
         self.pwm = pwm
     def runForward(self):
         print("Starting Motor Forward Thread")
-        motor(1, 70, self.Motor, self.input1, self.input2, self.pwm)
+        motor(1, 30, self.Motor, self.input1, self.input2, self.pwm)
         print("Exit Motor Forward Thread")
     def runBackward(self):
         print("Starting Motor Backward Thread")
-        motor(2, 100, self.Motor, self.input1, self.input2, self.pwm)
+        motor(2, 40, self.Motor, self.input1, self.input2, self.pwm)
         print("Exit Motor Backward Thread")
     def stop(self):
         print("Starting Motor Stop Thread")

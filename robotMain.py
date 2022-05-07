@@ -15,12 +15,16 @@ class robot:
 
         #For turning into parking lot (Step 2)
         self.parking = 0
+        
+        #For parked car:
+        self.parked = 0
 
     def checkEmptySpace(self):
         if self.ultraData[6] < 20: #Got obstacle
             print("Obstacle detected, continue forward...")
             self.leftFlag = 0
             self.checkingLot = 0
+            self.StartCheckLotTime = time.time()
             self.motorThread.runForward()
             self.servoThread.runStraight()
 
@@ -44,7 +48,7 @@ class robot:
             #self.servoThread.runStraight()
 
     def confirmEmptySpace(self):
-        if time.time() - self.StartCheckLotTime > 6 and self.checkingLot == 1: #Means lot is empty
+        if time.time() - self.StartCheckLotTime > 1.6 and self.checkingLot == 1: #Means lot is empty
             #Lot is empty
             print("Lot is empty, reversing in...")
             if self.leftFlag == 1:
@@ -57,5 +61,12 @@ class robot:
                 self.servoThread.runRight()
         else:
             self.parking = 0
-    #def checkParkingObstacles(self):
+    def checkParkingObstacles(self):
         #Check how to determine car is straight in the lot
+        if (self.ultraData[6] > self.ultraData[5] - 2) and (self.ultraData[6] < self.ultraData[5] + 2):
+            #Car straight in the lot
+            self.servoThread.runStraight()
+        if self.ultraData[3] < 10:
+            #Car reached end of lot
+            self.parked = 1
+            self.motorThread.stop()
