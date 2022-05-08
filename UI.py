@@ -1,5 +1,6 @@
 from tkinter import *
 from time import sleep
+from powerOn import *
 
 root = Tk()
 root.title("Smart Robot Interface")
@@ -18,6 +19,9 @@ motorServoFrame.grid(row=3,column=2,columnspan=3)
 buttonFrame = Frame(root)
 buttonFrame.grid(row=1, column=0)
 
+feedbackFrame = Frame(root)
+feedbackFrame.grid(row=4,column=0,columnspan=6)
+
 #string variables
 us1str =StringVar()
 us2str =StringVar()
@@ -27,6 +31,7 @@ us5str =StringVar()
 us6str =StringVar()
 motorStr = StringVar()
 servoStr = StringVar()
+feedbackStr = StringVar()
 
 #initalisation of all the commands
 us1str.set('0')
@@ -37,6 +42,7 @@ us5str.set('0')
 us6str.set('0')
 motorStr.set('0')
 servoStr.set('0')
+feedbackStr.set("Waiting for code to run")
 
 
 #UI For ultrasonic sensor
@@ -92,10 +98,14 @@ servoPrompt.grid(row=1, column=5)
 controlLabel = Label ( buttonFrame,text ="Power Controls")
 controlLabel.grid(row=1,column=0,columnspan=4)
 
-onButton = Button (buttonFrame, text='Power ON', padx=20, pady=10) #command= lambda: servocontrol("SERVO_ON")
-offButton = Button (buttonFrame, text='Power OFF', padx=20, pady=10)
+onButton = Button(buttonFrame, text='Power ON', padx=20, pady=10, command= lambda:setPowerOnFlag() ) #command= lambda: servocontrol("SERVO_ON")
+offButton = Button (buttonFrame, text='Power OFF', padx=20, pady=10,command= lambda:checkFlag())
 onButton.grid(row=2,column=0)
 offButton.grid(row=3,column=0)
+
+#for the shell terminal
+feedbackPrompt = Entry(feedbackFrame, textvariable=feedbackStr,width=60)
+feedbackPrompt.grid(row=3, column=5)
 
 
 #dummylabel for spacing purposes
