@@ -1,5 +1,4 @@
 from tkinter import *
-import testFile
 from time import sleep
 
 root = Tk()
@@ -9,8 +8,6 @@ root.title("Smart Robot Interface")
 titletext = Label(root, text= 'Smart Robot Interface')
 titletext.config(font= ('New Times Roman',25))
 titletext.grid( row=0, column=0,columnspan=5)
-
-
 
 ultrasonicFrame = Frame(root)
 ultrasonicFrame.grid(row=1,column=2,columnspan=3)
@@ -28,13 +25,18 @@ us3str =StringVar()
 us4str =StringVar()
 us5str =StringVar()
 us6str =StringVar()
+motorStr = StringVar()
+servoStr = StringVar()
 
+#initalisation of all the commands
 us1str.set('0')
 us2str.set('0')
 us3str.set('0')
 us4str.set('0')
 us5str.set('0')
 us6str.set('0')
+motorStr.set('0')
+servoStr.set('0')
 
 
 #UI For ultrasonic sensor
@@ -44,52 +46,44 @@ ultrasonicTitleHeader.grid(row=0,column=1,columnspan=4)
  
 us1 = Label(ultrasonicFrame,text='Sensor 1' )
 us1.grid(row=1,column=0)
-us1Prompt = Entry(ultrasonicFrame, textvariable=us1str, width=5, height=1)
-
+us1Prompt = Entry(ultrasonicFrame, textvariable=us1str, width=5)
 us1Prompt.grid(row=1,column=1,columnspan=1 )
 
 us2 = Label(ultrasonicFrame,text='Sensor 2' )
 us2.grid(row=2,column=0)
-us2Prompt = Text(ultrasonicFrame,width=5, height=1)
-us2Prompt.insert(INSERT,'hello')
+us2Prompt = Entry(ultrasonicFrame, textvariable=us2str, width=5)
 us2Prompt.grid(row=2,column=1,columnspan=1,rowspan=1)
 
 us3 = Label(ultrasonicFrame,text='Sensor 3' )
 us3.grid(row=3,column=1)
-us3Prompt = Text(ultrasonicFrame,width=5, height=1)
-us3Prompt.insert(INSERT,'hello')
+us3Prompt = Entry(ultrasonicFrame, textvariable=us3str, width=5)
 us3Prompt.grid(row=3,column=2,columnspan=1,rowspan=1)
 
 us4 = Label(ultrasonicFrame,text='Sensor 4' )
 us4.grid(row=3,column=4)
-us4Prompt = Text(ultrasonicFrame,width=5, height=1)
-us4Prompt.insert(INSERT,'hello')
+us4Prompt = Entry(ultrasonicFrame, textvariable=us4str, width=5)
 us4Prompt.grid(row=3,column=3,columnspan=1,rowspan=1)
 
 us5 = Label(ultrasonicFrame,text='Sensor 5' )
 us5.grid(row=2,column=5)
-us5Prompt = Text(ultrasonicFrame,width=5, height=1)
-us5Prompt.insert(INSERT,'hello')
+us5Prompt = Entry(ultrasonicFrame, textvariable=us5str, width=5)
 us5Prompt.grid(row=2,column=4,columnspan=1,rowspan=1)
 
 us6 = Label(ultrasonicFrame,text='Sensor 6' )
 us6.grid(row=1,column=5)
-us6Prompt = Text(ultrasonicFrame,width=5, height=1)
-us6Prompt.insert(INSERT,'hello')
+us6Prompt = Entry(ultrasonicFrame, textvariable=us6str, width=5)
 us6Prompt.grid(row=1,column=4,columnspan=1,rowspan=1)
 
 #UI FOR MOTOR and Servo
 
 motorLabel = Label(motorServoFrame, text= 'MotorPWM')
 motorLabel.grid(row=1,column =0)
-motorPrompt = Text(motorServoFrame, width =5,height=1)
-motorPrompt.insert(INSERT, 'hello')
+motorPrompt = Entry(motorServoFrame, textvariable=motorStr, width=5)
 motorPrompt.grid(row=1,column=1 )
 
 servoLabel = Label(motorServoFrame, text = 'ServoPWM' )
 servoLabel.grid(row =1,column=4)
-servoPrompt = Text(motorServoFrame, width =5, height=1)
-servoPrompt.insert(INSERT, 'hello')
+servoPrompt = Entry(motorServoFrame, textvariable=servoStr, width=5)
 servoPrompt.grid(row=1, column=5)
 
 
